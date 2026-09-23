@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR do trabalho</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <main class="sheet">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Tesouro Renda+</p>
+        <h1>QR do trabalho</h1>
+      </div>
+    </header>
+    <p class="lede">Este código abre o quiz.</p>
+    <p id="local-warn" class="notice" hidden>Este QR aponta para este computador. No material impresso ele não abre no celular. Publique a pasta e baixe o QR de novo.</p>
+    <canvas id="qr" role="img" aria-label="QR code do quiz"></canvas>
+    <p id="qr-url" class="qr-url"></p>
+    <button type="button" class="download" id="qr-download">Baixar PNG</button>
+  </main>
+  <script src="../vendor/qrcode.js"></script>
+  <script>
+    (function () {
+      var canvas = document.getElementById('qr');
+      var warn = document.getElementById('local-warn');
+      var urlNode = document.getElementById('qr-url');
+      var host = location.hostname;
+      var local = location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host === '';
+      warn.hidden = !local;
+
+      var path = location.pathname.replace(/qr-code\/?(index\.html)?$/, '');
+      if (path.slice(-1) !== '/') path += '/';
+      var url = location.origin + path;
+
+      if (location.protocol === 'file:') {
+        urlNode.textContent = 'Abra a página por um endereço http para gerar o QR.';
+        return;
+      }
+
+      urlNode.textContent = url;
+      if (typeof qrcode !== 'function') {
+        urlNode.textContent = 'Não foi possível gerar o QR.';
+        return;
+      }
+      if (qrcode.stringToBytesFuncs && qrcode.stringToBytesFuncs['UTF-8']) {
+        qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+      }
+
+      var qr = qrcode(0, 'H');
+      qr.addData(url);
+      qr.make();
+      var count = qr.getModuleCount();
+      var scale = 8;
+      var quiet = 4;
+      var size = (count + quiet * 2) * scale;
+      canvas.width = size;
+      canvas.height = size;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f6f0e4';
+      ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = '#172033';
+      for (var row = 0; row < count; row++) {
+        for (var col = 0; col < count; col++) {
+          if (qr.isDark(row, col)) {
+            ctx.fillRect((col + quiet) * scale, (row + quiet) * scale, scale, scale);
+          }
+        }
+      }
+      canvas.dataset.ready = '1';
+
+      document.getElementById('qr-download').addEventListener('click', function () {
+        if (canvas.dataset.ready !== '1') return;
+        canvas.toBlob(function (blob) {
+          if (!blob) return;
+          var link = document.createElement('a');
+          var objectUrl = URL.createObjectURL(blob);
+          link.href = objectUrl;
+          link.download = 'qr-renda-mais.png';
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setTimeout(function () { URL.revokeObjectURL(objectUrl); }, 1000);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

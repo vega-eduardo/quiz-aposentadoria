@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz: com quanto você se aposenta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:ital,wght@0,400;0,500;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,560;0,9..144,640;1,9..144,520&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="sheet">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Descubra com quanto você pode se aposentar em três passos</p>
+        <h1 id="page-title">Com quanto você se aposenta</h1>
+      </div>
+    </header>
+
+    <div id="progress-wrap" hidden>
+      <p id="progress-label" class="progress-label">Pergunta 1 de 3</p>
+      <div class="track" aria-hidden="true"><span id="progress-bar"></span></div>
+    </div>
+
+    <form id="sim" autocomplete="off">
+      <section data-step="intro">
+        <p class="lede">Quanto você guarda por mês, e a renda que isso paga por 20 anos.</p>
+        <button type="button" class="continue" id="start">Começar</button>
+      </section>
+
+      <section data-step="age" hidden>
+        <h2>Quantos anos você tem?</h2>
+        <label class="field">
+          <input id="age" inputmode="numeric" placeholder="30" aria-label="Quantos anos você tem?">
+        </label>
+      </section>
+
+      <section data-step="retire" hidden>
+        <h2>Com quantos anos quer receber?</h2>
+        <label class="field">
+          <input id="retire" inputmode="numeric" placeholder="65" aria-label="Com quantos anos quer receber?">
+        </label>
+      </section>
+
+      <section data-step="money" hidden>
+        <h2>Quanto consegue guardar por mês?</h2>
+        <label class="field">
+          <span class="money-row">
+            <span class="prefix" aria-hidden="true">R$</span>
+            <input id="money" inputmode="decimal" placeholder="300" aria-label="Quanto consegue guardar por mês?">
+          </span>
+        </label>
+      </section>
+
+      <p id="error" class="notice notice-bad" role="alert" hidden></p>
+
+      <div class="nav" id="nav" hidden>
+        <button type="button" class="text-btn" id="back">Voltar</button>
+        <button type="button" class="continue" id="next">Continuar</button>
+      </div>
+
+      <section data-step="result" hidden aria-live="polite">
+        <p class="result-kicker" id="result-kicker">Você se aposentará com</p>
+        <p class="result-value" id="result-value">—</p>
+        <p class="result-caption" id="result-caption"></p>
+        <div id="story"></div>
+        <a class="continue cta" id="invest" href="https://www.tesourodireto.com.br/produtos/titulos/renda-mais" target="_blank" rel="noopener">Começar a investir</a>
+
+        <details class="after">
+          <summary>Os números da conta</summary>
+          <dl id="stats"></dl>
+        </details>
+
+        <div class="nav">
+          <button type="button" class="text-btn" id="back-result">Voltar</button>
+          <button type="button" class="text-btn" id="restart">Refazer</button>
+        </div>
+      </section>
+    </form>
+
+    <details id="method">
+      <summary>Como a conta é feita</summary>
+      <p>A ideia é simples: todo mês você guarda um valor, e esse dinheiro rende juros. Usamos um juro de <strong><span class="default-rate">7,00%</span> ao ano acima da inflação</strong>, parecido com o que o Tesouro Direto pagava em <span class="rates-date">17/09/2026</span>. Por ser acima da inflação, o que você guarda <strong>não perde valor com o tempo</strong>.</p>
+      <p>Somamos tudo o que você guardou até a idade que escolheu, mais os juros que rolaram nesse período. Esse é o <strong>saldo no início da renda</strong>.</p>
+      <p>Depois, esse saldo vira uma <strong>renda mensal por 20 anos</strong>, ou seja, 240 parcelas. Enquanto você recebe, a parte que ainda não foi paga <strong>continua rendendo</strong>. Por isso a parcela sai maior do que simplesmente dividir o saldo por 240.</p>
+      <p>O valor <strong>em reais de hoje</strong> é o que essa renda compraria agora. O número grande é o mesmo valor, só que <strong>corrigido pela inflação</strong> que o mercado esperava em 22/09/2026 para os anos até a sua aposentadoria. É o número que deve aparecer no seu extrato lá na frente. <strong>Parece muito mais, mas compra a mesma coisa.</strong></p>
+      <p>Para quem gosta de fórmula: r é o juro ao ano, i o juro ao mês e n o número de meses guardando.</p>
+      <p class="formula">i = (1 + r)<sup>1/12</sup> − 1</p>
+      <p class="formula">saldo = mensal × [((1 + i)<sup>n</sup> − 1) / i]</p>
+      <p class="formula">renda = saldo × i / (1 − (1 + i)<sup>−240</sup>)</p>
+    </details>
+
+    <footer>
+      <p>Estimativa com juros de <span class="rates-date">17/09/2026</span>. Extra ao INSS.</p>
+    </footer>
+  </main>
+  <noscript><p class="noscript">Esta página precisa de JavaScript para calcular.</p></noscript>
+  <script src="calc.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
